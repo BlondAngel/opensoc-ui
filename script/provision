@@ -5,9 +5,9 @@
 # Prevent dpkg-reconfigure interactive sessions
 export DEBIAN_FRONTEND=noninteractive
 
+apt-get update
 
 ### BEGIN SAMPLE PCAP DATA ###
-apt-get update
 apt-get install -y libpcap-dev tshark
 curl -s 'http://www.snaketrap.co.uk/pcaps/hbot.pcap' -o /vagrant/seed/hbot.pcap
 ### END SAMPLE PCAP DATA ###
@@ -17,7 +17,7 @@ curl -s 'http://www.snaketrap.co.uk/pcaps/hbot.pcap' -o /vagrant/seed/hbot.pcap
 # slapd doesn't seem to work right unless you configure it via debconf
 # The password for all users is opensoc
 debconf-set-selections /vagrant/seed/slapd.seed
-apt-get update
+#apt-get update
 apt-get -y install slapd ldap-utils
 
 cd /vagrant/seed/ldap
@@ -44,20 +44,18 @@ cd -
 update-rc.d elasticsearch defaults 95 10
 service elasticsearch restart
 
-# SEED ELASTICSEARCH
-cd /vagrant
-su vagrant -c "script/es_gen.js"
-su vagrant -c "script/es_seed"
-cd -
-### END ELASTICSEARCH ###
 
 ### NODE SETUP ###
-apt-get update
+#apt-get update
 apt-get install -y nodejs npm git
 
 ln -s /usr/bin/nodejs /usr/bin/node
 npm install -g nodemon
 npm install -g grunt-cli
+
+cd /vagrant
+git clone https://github.com/OpenSOC/kibana
+cd -
 
 cd /vagrant/kibana
 rm -rf node_modules dist
@@ -71,3 +69,10 @@ su vagrant -c  "echo 'export NODE_ENV=vagrant' >> /home/vagrant/.bashrc"
 su vagrant -c "ln -s /vagrant/.nodemonignore ~/.nodemonignore"
 cd -
 ### END NODE SETUP ###
+
+# SEED ELASTICSEARCH
+cd /vagrant
+su vagrant -c "script/es_gen.js"
+su vagrant -c "script/es_seed"
+cd -
+### END ELASTICSEARCH ###
