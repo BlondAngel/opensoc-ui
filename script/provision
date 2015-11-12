@@ -53,10 +53,6 @@ ln -s /usr/bin/nodejs /usr/bin/node
 npm install -g nodemon
 npm install -g grunt-cli
 
-cd /vagrant
-git clone https://github.com/OpenSOC/kibana
-cd -
-
 cd /vagrant/kibana
 rm -rf node_modules dist
 su vagrant -c "npm install"
